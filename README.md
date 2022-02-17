@@ -1,4 +1,4 @@
-# Metadata Service
+# Lineage Service
 
 using Apache Atlas as metadata store to proxy the authorization
 
