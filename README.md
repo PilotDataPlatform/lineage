@@ -20,7 +20,7 @@ follow the step below to setup the service
 > To run the service as dev mode
 
 ```
-python3 -m pip install -r requirements.txt
+python3 -m pip install -r requirements.txt -r internal_requirements.txt
 python3 app.py
 ```
 
