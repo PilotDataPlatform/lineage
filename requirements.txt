@@ -30,7 +30,7 @@ psycopg2-binary==2.8.6
 pyasn1==0.4.8
 pycparser==2.20
 PyJWT==1.4.2
-pykerberos==1.2.1
+pykerberos==1.2.4
 pylint==2.6.0
 pyrsistent==0.17.3
 python-jose==3.2.0
