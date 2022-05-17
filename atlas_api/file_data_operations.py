@@ -1,3 +1,18 @@
+# Copyright (C) 2022 Indoc Research
+#
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU Affero General Public License as
+# published by the Free Software Foundation, either version 3 of the
+# License, or (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU Affero General Public License for more details.
+#
+# You should have received a copy of the GNU Affero General Public License
+# along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
 from config import ConfigClass
 from flask import request, make_response, jsonify
 from flask_restx import Resource
@@ -29,7 +44,7 @@ class FileDataOperations(Resource):
             project_code = post_data.get('project_code')
             project_name = post_data.get('project_name', project_code)
             labels = post_data.get('labels', [])
-            dcm_id = post_data.get(ConfigClass.DCM_PIPELINE_ID, None)
+            dcm_id = post_data.get("dcm_id", None)
             global_entity_id = post_data.get('global_entity_id')
 
             response = self.file_data_mgr.create(

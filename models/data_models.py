@@ -1,3 +1,18 @@
+# Copyright (C) 2022 Indoc Research
+#
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU Affero General Public License as
+# published by the Free Software Foundation, either version 3 of the
+# License, or (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU Affero General Public License for more details.
+#
+# You should have received a copy of the GNU Affero General Public License
+# along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
 from enum import Enum
 from atlas_api import module_api
 from flask_restx import Api, Resource, fields
@@ -24,7 +39,7 @@ file_data_post_form = module_api.model(
         'namespace': fields.String(readOnly=True, description='namespace', enum=['greenroom', 'core']),
         'project_code': fields.String(readOnly=True, description='project code'),
         'labels': fields.List(readOnly=True, description='labels', cls_or_instance=fields.String), ## optional
-        ConfigClass.DCM_PIPELINE_ID: fields.String(readOnly=True, description=''), ## optional
+        "dcm_id": fields.String(readOnly=True, description=''), ## optional
         'processed_pipeline': fields.String(readOnly=True, description='processed_pipeline'), ## optional, for processed file
         'operator': fields.String(readOnly=True, description='operator'), ## optional, for processed file
     }

@@ -1,2 +1,1 @@
---index-url https://${PIP_USERNAME}:${PIP_PASSWORD}@git.indocresearch.org/api/v4/groups/pilot/-/packages/pypi/simple
-common==0.0.12
+pilot-platform-common==0.0.25

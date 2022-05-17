@@ -1,3 +1,18 @@
+# Copyright (C) 2022 Indoc Research
+#
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU Affero General Public License as
+# published by the Free Software Foundation, either version 3 of the
+# License, or (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU Affero General Public License for more details.
+#
+# You should have received a copy of the GNU Affero General Public License
+# along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
 import os
 import requests
 from common import VaultClient
@@ -7,10 +22,11 @@ from typing import Dict, Set, List, Any
 from functools import lru_cache
 from dotenv import load_dotenv
 
-#load env var from local env file for local test
+# load env var from local env file for local test
 load_dotenv()
 SRV_NAMESPACE = os.environ.get("APP_NAME", "service_cataloguing")
 CONFIG_CENTER_ENABLED = os.environ.get("CONFIG_CENTER_ENABLED", "false")
+
 
 def load_vault_settings(settings: BaseSettings) -> Dict[str, Any]:
     if CONFIG_CENTER_ENABLED == "false":
@@ -27,13 +43,12 @@ class Settings(BaseSettings):
     version: str = "0.1.0"
     namespace: str = ""
     opentelemetry_enabled: bool = False
-    
+
     ROOT_PATH: str
-    ATLAS_API: str 
-    NEO4J_SERVICE: str 
-    UTILITY_SERVICE: str 
-    ATLAS_ADMIN: str 
-    ATLAS_PASSWD: str 
+    ATLAS_API: str
+    UTILITY_SERVICE: str
+    ATLAS_ADMIN: str
+    ATLAS_PASSWD: str
 
     # the packaged modules
     api_modules: List[str] = ["atlas_api"]
@@ -43,9 +58,8 @@ class Settings(BaseSettings):
 
         self.opentelemetry_enabled = True if self.OPEN_TELEMETRY_ENABLED == "TRUE" else False
         self.ATLAS_API += "/"
-        self.NEO4J_SERVICE += "/v1/neo4j/"
         self.UTILITY_SERVICE += "/v1/"
-    
+
     class Config:
         env_file = '.env'
         env_file_encoding = 'utf-8'
@@ -53,10 +67,10 @@ class Settings(BaseSettings):
 
         @classmethod
         def customise_sources(
-            cls,
-            init_settings,
-            env_settings,
-            file_secret_settings,
+                cls,
+                init_settings,
+                env_settings,
+                file_secret_settings,
         ):
             return (
                 init_settings,
@@ -64,11 +78,12 @@ class Settings(BaseSettings):
                 env_settings,
                 file_secret_settings,
             )
-    
+
 
 @lru_cache(1)
 def get_settings():
-    settings =  Settings()
+    settings = Settings()
     return settings
+
 
 ConfigClass = Settings()
