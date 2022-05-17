@@ -21,7 +21,8 @@ jobs:
           pip install virtualenv
           virtualenv -p python venv
           source venv/bin/activate
-          pip install -r internal_requirements.txt -r tests/test_requirements.txt
+          pip install pilot-platform-common=="0.0.25"
+          pip install -r tests/test_requirements.txt
       - name: Run tests
         run: |
           source venv/bin/activate
