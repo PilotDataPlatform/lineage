@@ -18,6 +18,7 @@ jobs:
           python-version: 3.9
       - name: Install dependencies
         run: |
+          pip install virtualenv
           virtualenv -p python venv
           source .venv/bin/activate
           pip install tests/test_requirements.txt
