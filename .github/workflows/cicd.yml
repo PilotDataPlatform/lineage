@@ -1,0 +1,26 @@
+name: Run Tests
+
+on:
+  push:
+    branches: [ develop ]
+  pull_request:
+    branches: [ main, develop ]
+
+jobs:
+  run_tests:
+    name: Run Tests
+    runs-on: ubuntu-20.04
+    steps:
+      - uses: actions/checkout@v3
+      - name: Init Python 3.9
+        uses: actions/setup-python@v2
+        with:
+          python-version: 3.9
+      - name: Install dependencies
+        run: |
+          source .venv/bin/activate
+          pip install tests/test_requirements.txt
+      - name: Run tests
+        run: |
+          source .venv/bin/activate
+          python -m pytest -c tests/pytest.ini
