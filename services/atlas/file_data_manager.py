@@ -13,29 +13,29 @@
 # You should have received a copy of the GNU Affero General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+import time
+
+import requests
+
+from config import ConfigClass
 from models.meta_class import MetaService
 from services.logger_services.logger_factory_service import SrvLoggerFactory
-from config import ConfigClass
-import requests
-import time
-import json
-import os
+
 
 class SrvFileDataMgr(metaclass=MetaService):
     _logger = SrvLoggerFactory('api_file_data').get_logger()
+
     def __init__(self):
         self.base_url = ConfigClass.ATLAS_API
         self.entity_endpoint = 'api/atlas/v2/entity'
         self.search_endpoint = 'api/atlas/v2/search/attribute'
-        self.entity_uniquename_endpoint = "api/atlas/v2/entity/uniqueAttribute/type/{}?attr:qualifiedName={}"
+        self.entity_uniquename_endpoint = 'api/atlas/v2/entity/uniqueAttribute/type/{}?attr:qualifiedName={}'
         self.entity_type = 'file_data'
 
     def create(self, geid, uploader, path, file_name, file_size,
-        description, namespace, project_code, project_name,
-        labels, dcm_id=None , guid=None):
-        '''
-        create data entity or update in Atlas
-        ''' 
+               description, namespace, project_code, project_name,
+               labels, dcm_id=None, guid=None):
+        """create data entity or update in Atlas."""
         headers = {'content-type': 'application/json'}
 
         attrs = {
@@ -44,9 +44,9 @@ class SrvFileDataMgr(metaclass=MetaService):
             'file_name': file_name,
             'path': path,
             'qualifiedName': geid,
-            'full_path': geid, # full path requires unique
+            'full_path': geid,  # full path requires unique
             'file_size': file_size,
-            "dcm_id": dcm_id,
+            'dcm_id': dcm_id,
             'archived': False,
             'description': description,
             'owner': uploader,
@@ -55,7 +55,7 @@ class SrvFileDataMgr(metaclass=MetaService):
             'namespace': namespace,
             'project_code': project_code,
             'bucketName': project_code,
-            ## ------------------------------------------------------------------------------------
+            #
             'createTime': time.time(),
             'modifiedTime': 0,
             'replicatedTo': None,
@@ -72,10 +72,10 @@ class SrvFileDataMgr(metaclass=MetaService):
             'group': None,
         }
         if dcm_id:
-            attrs["dcm_id"] = dcm_id
+            attrs['dcm_id'] = dcm_id
         if project_name:
             attrs['project_name'] = project_name
-        
+
         atlas_post_form_json = {
             'referredEntities': {},
             'entity': {
@@ -97,11 +97,11 @@ class SrvFileDataMgr(metaclass=MetaService):
         }
         if guid:
             atlas_post_form_json['entity']['guid'] = guid
-        
-        res = requests.post(self.base_url + self.entity_endpoint, 
-            verify = False, json = atlas_post_form_json, 
-            auth = requests.auth.HTTPBasicAuth(ConfigClass.ATLAS_ADMIN,
-                ConfigClass.ATLAS_PASSWD),
-            headers=headers
-        )
+
+        res = requests.post(self.base_url + self.entity_endpoint,
+                            verify=False, json=atlas_post_form_json,
+                            auth=requests.auth.HTTPBasicAuth(ConfigClass.ATLAS_ADMIN,
+                                                             ConfigClass.ATLAS_PASSWD),
+                            headers=headers
+                            )
         return res

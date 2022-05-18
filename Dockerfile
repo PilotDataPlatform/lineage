@@ -12,9 +12,12 @@ RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && \
     apt-get install -y vim-tiny less && \
     ln -s /usr/bin/vim.tiny /usr/bin/vim && \
     rm -rf /var/lib/apt/lists/*
-COPY requirements.txt ./
-COPY internal_requirements.txt ./
-pip install --no-cache-dir -r requirements.txt -r internal_requirements.txt
+
+
+COPY poetry.lock pyproject.toml ./
+RUN pip install --no-cache-dir poetry==1.1.12
+RUN poetry config virtualenvs.create false
+RUN poetry install --no-dev --no-root --no-interaction
 COPY . .
 RUN chmod +x gunicorn_starter.sh
 

@@ -15,19 +15,21 @@
 
 import importlib
 
-from flask import Flask, request
+from flask import Flask
 from flask_cors import CORS
-from config import ConfigClass, SRV_NAMESPACE
-from services.logger_services.logger_factory_service import SrvLoggerFactory
 from opentelemetry import trace
 from opentelemetry.exporter.jaeger.thrift import JaegerExporter
 from opentelemetry.instrumentation.flask import FlaskInstrumentor
-from opentelemetry.sdk.resources import Resource
+from opentelemetry.instrumentation.logging import LoggingInstrumentor
+from opentelemetry.instrumentation.requests import RequestsInstrumentor
 from opentelemetry.sdk.resources import SERVICE_NAME
+from opentelemetry.sdk.resources import Resource
 from opentelemetry.sdk.trace import TracerProvider
 from opentelemetry.sdk.trace.export import BatchSpanProcessor
-from opentelemetry.instrumentation.requests import RequestsInstrumentor
-from opentelemetry.instrumentation.logging import LoggingInstrumentor
+
+from config import SRV_NAMESPACE
+from config import ConfigClass
+from services.logger_services.logger_factory_service import SrvLoggerFactory
 
 app = Flask(__name__)
 _main_logger = SrvLoggerFactory('main').get_logger()
@@ -38,8 +40,8 @@ def create_app(extra_config_settings={}):
     app.config.from_object(__name__ + '.ConfigClass')
     CORS(
         app,
-        origins="*",
-        allow_headers=["Content-Type", "Authorization", "Access-Control-Allow-Credentials"],
+        origins='*',
+        allow_headers=['Content-Type', 'Authorization', 'Access-Control-Allow-Credentials'],
         supports_credentials=True,
         intercept_exceptions=False)
 

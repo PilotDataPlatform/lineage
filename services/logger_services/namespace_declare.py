@@ -13,4 +13,4 @@
 # You should have received a copy of the GNU Affero General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-service_namespace = "service_cataloguing"
+service_namespace = 'service_cataloguing'

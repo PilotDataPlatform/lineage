@@ -13,20 +13,23 @@
 # You should have received a copy of the GNU Affero General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-from flask import request, make_response, jsonify
-# from flask_restful import Resource
-from flask_restx import Api, Resource, fields
-import requests
-from requests.auth import HTTPBasicAuth
-from config import ConfigClass  
 import json
 
+import requests
+from flask import request
+from flask_restx import Resource
+from flask_restx import fields
+from requests.auth import HTTPBasicAuth
+
 from app import app
-from atlas_api.swagger_modules import entity_attribute, entity, create_update_entity
-from . import atlas_entity_ns, module_api
+from atlas_api.swagger_modules import create_update_entity
+from config import ConfigClass
+
+from . import atlas_entity_ns
+from . import module_api
+
 
 class EntityAction(Resource):
-
     post_sample_return = '''
     # Below are the sample return
     {
@@ -51,33 +54,30 @@ class EntityAction(Resource):
     @atlas_entity_ns.response(200, post_sample_return)
     # to add the new entity to atlas
     def post(self):
-        '''
-        add new entity to the metadata service by payload
-        '''
+        """add new entity to the metadata service by payload."""
         post_data = request.get_json()
 
         try:
             headers = {'content-type': 'application/json'}
-            res = requests.post(ConfigClass.ATLAS_API+'api/atlas/v2/entity', 
-                verify=False, json=post_data, 
-                auth=HTTPBasicAuth(ConfigClass.ATLAS_ADMIN, ConfigClass.ATLAS_PASSWD),
-                headers=headers
-            )
+            res = requests.post(ConfigClass.ATLAS_API + 'api/atlas/v2/entity',
+                                verify=False, json=post_data,
+                                auth=HTTPBasicAuth(ConfigClass.ATLAS_ADMIN, ConfigClass.ATLAS_PASSWD),
+                                headers=headers
+                                )
 
             # log it if not 200 level response
             if res.status_code >= 300:
                 app.logger.error('Error in response: %s', res.text)
-                return {"result": res.text}, res.status_code
+                return {'result': res.text}, res.status_code
 
         except Exception as e:
             app.logger.error('Error in creating new entity: %s', str(e))
-            return {"result":str(e)}, 403
+            return {'result': str(e)}, 403
 
-        return {'result':res.json()}, res.status_code
+        return {'result': res.json()}, res.status_code
 
 
 class EntityQueryBasic(Resource):
-
     query_sample_return = '''
     {
         "result":[
@@ -101,7 +101,7 @@ class EntityQueryBasic(Resource):
         ]
     }
     '''
-    
+
     query_payload = module_api.model('query_payload_basic', {
         'excludeDeletedEntities': fields.Boolean(readOnly=True, description=''),
         'includeSubClassifications': fields.Boolean(readOnly=True, description=''),
@@ -116,9 +116,7 @@ class EntityQueryBasic(Resource):
     @atlas_entity_ns.expect(query_payload)
     @atlas_entity_ns.response(200, query_sample_return)
     def post(self):
-        '''
-        Get list of entities by the payload query
-        '''
+        """Get list of entities by the payload query."""
         post_data = request.get_json()
 
         #######################################################################
@@ -126,38 +124,37 @@ class EntityQueryBasic(Resource):
         # but aggregation in the quick search will return correct number
         # here I call the quick search again to get that number for pagination
         #######################################################################
-        # print(post_data)
-        type_name = post_data.get('typeName', None)
-        app.logger.debug(ConfigClass.ATLAS_API+'api/atlas/v2/search/quick')
-        app.logger.debug('EntityQueryBasic post_data' + str(post_data))
-        limit = 0 
-        offset = 0
-        if post_data.get("limit", None):
-            limit = post_data.pop("limit")
-        if post_data.get("offset", None):
-            offset = post_data.pop("offset")
 
-        post_data["limit"] = 99999 
+        app.logger.debug(ConfigClass.ATLAS_API + 'api/atlas/v2/search/quick')
+        app.logger.debug('EntityQueryBasic post_data' + str(post_data))
+        limit = 0
+        offset = 0
+        if post_data.get('limit', None):
+            limit = post_data.pop('limit')
+        if post_data.get('offset', None):
+            offset = post_data.pop('offset')
+
+        post_data['limit'] = 99999
         try:
             headers = {'content-type': 'application/json'}
-            res = requests.post(ConfigClass.ATLAS_API+'api/atlas/v2/search/basic', 
-                verify=False, headers=headers, json=post_data, 
-                auth=HTTPBasicAuth(ConfigClass.ATLAS_ADMIN, ConfigClass.ATLAS_PASSWD)
-            )
+            res = requests.post(ConfigClass.ATLAS_API + 'api/atlas/v2/search/basic',
+                                verify=False, headers=headers, json=post_data,
+                                auth=HTTPBasicAuth(ConfigClass.ATLAS_ADMIN, ConfigClass.ATLAS_PASSWD)
+                                )
             # log it if not 200 level response
             if res.status_code >= 300:
                 app.logger.error('Error in response: %s', res.text)
-                return {"result": res.text}, res.status_code
+                return {'result': res.text}, res.status_code
             # also update the approximate count
             app.logger.debug('EntityQueryBasic res 2: ' + str(res.json()))
             ret_json = res.json()
 
         except Exception as e:
             app.logger.error('Error in getting file list: %s', str(e))
-            return {"result":str(e)}, 403
+            return {'result': str(e)}, 403
         entity_data = []
         if 'entities' in ret_json:
-            entity_data = ret_json["entities"]
+            entity_data = ret_json['entities']
 
         approximateCount = len(entity_data)
 
@@ -165,13 +162,13 @@ class EntityQueryBasic(Resource):
             entity_data = entity_data[int(offset):]
         if int(limit):
             entity_data = entity_data[:int(limit)]
-        ret_json["entities"] = entity_data
-        ret_json["approximateCount"] = approximateCount
-        ret_json["searchParameters"]["limit"] = int(limit) 
-        ret_json["searchParameters"]["offset"] = int(offset) 
+        ret_json['entities'] = entity_data
+        ret_json['approximateCount'] = approximateCount
+        ret_json['searchParameters']['limit'] = int(limit)
+        ret_json['searchParameters']['offset'] = int(offset)
         app.logger.debug('EntityQueryBasic ret_json: ' + str(ret_json))
-        return {"result":ret_json}, res.status_code
-        
+        return {'result': ret_json}, res.status_code
+
 
 class EntityActionByGuid(Resource):
     entity_sample_return = '''
@@ -203,28 +200,25 @@ class EntityActionByGuid(Resource):
     # to get the guid entity from atlas
     @atlas_entity_ns.response(200, entity_sample_return)
     def get(self, guid):
-        '''
-        get specific entity by guid
-        '''
+        """get specific entity by guid."""
         app.logger.info('Recieving the parameter: %s', guid)
 
         try:
             headers = {'content-type': 'application/json'}
-            res = requests.get(ConfigClass.ATLAS_API+'api/atlas/v2/entity/guid/%s'%(guid), 
-                verify=False, headers=headers, 
-                auth=HTTPBasicAuth(ConfigClass.ATLAS_ADMIN, ConfigClass.ATLAS_PASSWD)
-            )
+            res = requests.get(ConfigClass.ATLAS_API + 'api/atlas/v2/entity/guid/%s' % (guid),
+                               verify=False, headers=headers,
+                               auth=HTTPBasicAuth(ConfigClass.ATLAS_ADMIN, ConfigClass.ATLAS_PASSWD)
+                               )
 
             # log it if not 200 level response
             if res.status_code >= 300:
                 app.logger.error('Error in response: %s', res.text)
-                return {"result": res.text}, res.status_code
+                return {'result': res.text}, res.status_code
         except Exception as e:
             app.logger.error('Error in getting entity by guid: %s', str(e))
-            return {"result":str(e)}, 403
+            return {'result': str(e)}, 403
 
-        return {"result":res.json()}, res.status_code
-
+        return {'result': res.json()}, res.status_code
 
     # deprecate the entity by guid
     def delete(self, guid):
@@ -232,20 +226,20 @@ class EntityActionByGuid(Resource):
 
         try:
             headers = {'content-type': 'application/json'}
-            res = requests.delete(ConfigClass.ATLAS_API+'api/atlas/v2/entity/guid/%s'%(guid), 
-                verify=False, headers=headers, 
-                auth=HTTPBasicAuth(ConfigClass.ATLAS_ADMIN, ConfigClass.ATLAS_PASSWD)
-            )
+            res = requests.delete(ConfigClass.ATLAS_API + 'api/atlas/v2/entity/guid/%s' % (guid),
+                                  verify=False, headers=headers,
+                                  auth=HTTPBasicAuth(ConfigClass.ATLAS_ADMIN, ConfigClass.ATLAS_PASSWD)
+                                  )
 
             # log it if not 200 level response
             if res.status_code >= 300:
                 app.logger.error('Error in response: %s', res.text)
-                return {"result": res.text}, res.status_code
+                return {'result': res.text}, res.status_code
         except Exception as e:
             app.logger.error('Error in getting entity by guid: %s', str(e))
-            return {"result":str(e)}, 403
+            return {'result': str(e)}, 403
 
-        return {"result":res.json()}, res.status_code
+        return {'result': res.json()}, res.status_code
 
 
 class EntityByGuidBulk(Resource):
@@ -277,34 +271,32 @@ class EntityByGuidBulk(Resource):
 
     @atlas_entity_ns.response(200, entity_sample_return)
     def post(self):
-        guids = request.get_json().get("guids", [])
+        guids = request.get_json().get('guids', [])
         if not guids:
-            return {"result": "guids required"}, 400
+            return {'result': 'guids required'}, 400
 
         try:
-            res = requests.get(ConfigClass.ATLAS_API+'api/atlas/v2/entity/bulk', 
-                auth=HTTPBasicAuth(ConfigClass.ATLAS_ADMIN, ConfigClass.ATLAS_PASSWD),
-                params={"guid": guids}
-            )
+            res = requests.get(ConfigClass.ATLAS_API + 'api/atlas/v2/entity/bulk',
+                               auth=HTTPBasicAuth(ConfigClass.ATLAS_ADMIN, ConfigClass.ATLAS_PASSWD),
+                               params={'guid': guids}
+                               )
             if res.status_code >= 300:
                 app.logger.error('Error in response: %s', res.text)
-                return {"result": res.text}, res.status_code
+                return {'result': res.text}, res.status_code
         except Exception as e:
             app.logger.error('Error in getting entity by guid: %s', str(e))
-            return {"result":str(e)}, 403
-        return {"result":res.json()}, res.status_code
+            return {'result': str(e)}, 403
+        return {'result': res.json()}, res.status_code
 
 
 class EntityTagByGuid(Resource):
     def post(self, guid):
-        '''
-        the api allow to update the tags given one guid
-        '''
+        """the api allow to update the tags given one guid."""
 
         post_data = request.get_json()
         label = post_data.get('labels', None)
         if not isinstance(label, list):
-            return {"result": "labels is required"}, 403
+            return {'result': 'labels is required'}, 403
         app.logger.info('Recieving the parameter: %s', guid)
 
         try:
@@ -314,7 +306,8 @@ class EntityTagByGuid(Resource):
             import os
             cmd = '''
             curl -XPOST -H "Content-type: application/json" -d '%s' '%sapi/atlas/v2/entity/guid/%s/labels' -u %s:%s
-            '''%(json.dumps(post_data['labels']), ConfigClass.ATLAS_API, guid, ConfigClass.ATLAS_ADMIN, ConfigClass.ATLAS_PASSWD)
+            ''' % (json.dumps(post_data['labels']), ConfigClass.ATLAS_API, guid, ConfigClass.ATLAS_ADMIN,
+                   ConfigClass.ATLAS_PASSWD)
             stream = os.popen(cmd)
 
             # here since the curl will return the str so try to parse into json
@@ -322,21 +315,21 @@ class EntityTagByGuid(Resource):
             output = stream.read()
             if output != '':
                 error_json = json.loads(output)
-                return {"result":error_json.get('errorMessage', None)}, 403
+                return {'result': error_json.get('errorMessage', None)}, 403
 
         except Exception as e:
-            if "Invalid label" in str(e):
-                return {"result":str(e)}, 403
+            if 'Invalid label' in str(e):
+                return {'result': str(e)}, 403
             app.logger.error('Error in update entity by guid: %s', str(e))
-            return {"result":str(e)}, 500
+            return {'result': str(e)}, 500
 
-        return {"result":'success'}, 200
+        return {'result': 'success'}, 200
 
     def get(self, guid):
         try:
-            url = ConfigClass.ATLAS_API + "api/atlas/v2/entity/guid/{}".format(guid)
+            url = ConfigClass.ATLAS_API + 'api/atlas/v2/entity/guid/{}'.format(guid)
             res = requests.get(
-                url, 
+                url,
                 auth=HTTPBasicAuth(ConfigClass.ATLAS_ADMIN, ConfigClass.ATLAS_PASSWD)
             )
             if res.status_code == 200:
@@ -345,4 +338,4 @@ class EntityTagByGuid(Resource):
                 return res.text, res.status_code
         except Exception as e:
             app.logger.error('Error in update entity by guid: %s', str(e))
-            return {"result":str(e)}, 500
+            return {'result': str(e)}, 500

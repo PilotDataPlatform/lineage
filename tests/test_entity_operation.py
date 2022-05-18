@@ -13,15 +13,17 @@
 # You should have received a copy of the GNU Affero General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-import unittest
 import time
-from config import ConfigClass
+import unittest
+from datetime import datetime
+from datetime import timedelta
+
 from tests.logger import Logger
-from tests.prepare_tests import SetUpTest, test_client
-from datetime import datetime, timedelta
+from tests.prepare_tests import SetUpTest
+from tests.prepare_tests import test_client
+
 
 class TestEntityOperation(unittest.TestCase):
-
     log = Logger(name='test_entity_operation.log')
     test = SetUpTest(log, test_client)
     upload_path = '/test_folder'
@@ -83,11 +85,11 @@ class TestEntityOperation(unittest.TestCase):
                     'group': None,
                     'updateBy': 'test_no_auth',
                     'bucketName': bucket_name, # project code
-                    'fileName': file_name,
+                    'fileName': file_name
                 },
                 'isIncomplete': False,
                 'status': 'ACTIVE',
-                'createdBy': "admin",
+                'createdBy': 'admin',
                 'version': 0,
                 'relationshipAttributes': {
                     'schema': [],
@@ -111,33 +113,33 @@ class TestEntityOperation(unittest.TestCase):
                                              cls.file_name)
             cls.guid = cls.test.create_entity(cls.post_data)
         except Exception as e:
-            cls.log.error(f"FAILED SETUP TEST: {e}")
-            raise unittest.SkipTest(f"Failed setup test {e}")
+            cls.log.error(f'FAILED SETUP TEST: {e}')
+            raise unittest.SkipTest(f'Failed setup test {e}')
 
     @classmethod
     def tearDownClass(cls):
-        cls.log.info("\n")
+        cls.log.info('\n')
         cls.test.delete_entity(cls.guid)
 
     def test_01_create_entity(self):
-        self.log.info("\n")
-        self.log.info(f"01 Test create_entity".center(80, '-'))
-        testing_api = "/v1/entity"
+        self.log.info('\n')
+        self.log.info('01 Test create_entity'.center(80, '-'))
+        testing_api = '/v1/entity'
         filename = self.file_name + self.stamp
         post_data = self.prepare_data(self.upload_path, self.bucket_name, filename)
-        self.log.info(f"POST API: {testing_api}")
-        self.log.info(f"POST DATA: {post_data}")
+        self.log.info(f'POST API: {testing_api}')
+        self.log.info(f'POST DATA: {post_data}')
         try:
             res = self.app.post(testing_api, json=post_data)
-            self.log.info(f"RESPONSE DATA: {res.data}")
-            self.log.info(F"RESPONSE STATUS: {res.status_code}")
+            self.log.info(f'RESPONSE DATA: {res.data}')
+            self.log.info(F'RESPONSE STATUS: {res.status_code}')
             self.assertEqual(res.status_code, 200)
             guid_res = res.json['result']
             guid_res = guid_res['mutatedEntities']['CREATE']
             guid = guid_res[0]['guid']
-            self.log.info(f"CHECK guid exist: {guid}")
+            self.log.info(f'CHECK guid exist: {guid}')
             self.assertIsNotNone(guid)
-            self.log.info(f"CHECK guid LENGTH: {len(guid)} VS {len(self.guid)}")
+            self.log.info(f'CHECK guid LENGTH: {len(guid)} VS {len(self.guid)}')
             self.assertEqual(len(guid), len(self.guid))
             self.test.delete_entity(guid)
         except Exception as e:
@@ -145,23 +147,23 @@ class TestEntityOperation(unittest.TestCase):
             raise e
 
     def test_02_create_entity_without_filename(self):
-        self.log.info("\n")
-        self.log.info(f"02 Test create_entity_without_filename".center(80, '-'))
-        testing_api = "/v1/entity"
-        post_data = self.prepare_data(self.upload_path, self.bucket_name, "")
-        self.log.info(f"POST API: {testing_api}")
-        self.log.info(f"POST DATA: {post_data}")
+        self.log.info('\n')
+        self.log.info('02 Test create_entity_without_filename'.center(80, '-'))
+        testing_api = '/v1/entity'
+        post_data = self.prepare_data(self.upload_path, self.bucket_name, '')
+        self.log.info(f'POST API: {testing_api}')
+        self.log.info(f'POST DATA: {post_data}')
         try:
             res = self.app.post(testing_api, json=post_data)
-            self.log.info(f"RESPONSE DATA: {res.data}")
-            self.log.info(F"RESPONSE STATUS: {res.status_code}")
+            self.log.info(f'RESPONSE DATA: {res.data}')
+            self.log.info(F'RESPONSE STATUS: {res.status_code}')
             self.assertEqual(res.status_code, 200)
             guid_res = res.json['result']
             guid_res = guid_res['mutatedEntities']['CREATE']
             guid = guid_res[0]['guid']
-            self.log.info(f"CHECK guid exist: {guid}")
+            self.log.info(f'CHECK guid exist: {guid}')
             self.assertIsNotNone(guid)
-            self.log.info(f"CHECK guid LENGTH: {len(guid)} VS {len(self.guid)}")
+            self.log.info(f'CHECK guid LENGTH: {len(guid)} VS {len(self.guid)}')
             self.assertEqual(len(guid), len(self.guid))
             self.test.delete_entity(guid)
         except Exception as e:
@@ -169,17 +171,17 @@ class TestEntityOperation(unittest.TestCase):
             raise e
 
     def test_03_create_entity_without_type(self):
-        self.log.info("\n")
-        self.log.info(f"03 Test create_entity_without_type".center(80, '-'))
-        testing_api = "/v1/entity"
+        self.log.info('\n')
+        self.log.info('03 Test create_entity_without_type'.center(80, '-'))
+        testing_api = '/v1/entity'
         file = self.file_name + self.stamp
         post_data = self.prepare_data(self.upload_path, self.bucket_name, file, 'sometype')
-        self.log.info(f"POST API: {testing_api}")
-        self.log.info(f"POST DATA: {post_data}")
+        self.log.info(f'POST API: {testing_api}')
+        self.log.info(f'POST DATA: {post_data}')
         try:
             res = self.app.post(testing_api, json=post_data)
-            self.log.info(f"RESPONSE DATA: {res.data}")
-            self.log.info(F"RESPONSE STATUS: {res.status_code}")
+            self.log.info(f'RESPONSE DATA: {res.data}')
+            self.log.info(F'RESPONSE STATUS: {res.status_code}')
             self.assertEqual(res.status_code, 400)
             self.assertIn(b'Type ENTITY with name sometype does not exist', res.data)
         except Exception as e:
@@ -188,15 +190,15 @@ class TestEntityOperation(unittest.TestCase):
 
     def test_04_get_entity_by_guid(self):
         # EntityActionByGuid, '/v1/entity/guid/<guid>'
-        self.log.info("\n")
-        self.log.info(f"04 Test get_entity_by_guid".center(80, '-'))
+        self.log.info('\n')
+        self.log.info('04 Test get_entity_by_guid'.center(80, '-'))
         testing_api = '/v1/entity/guid/%s' % str(self.guid)
-        self.log.info(f"POST API: {testing_api}")
+        self.log.info(f'POST API: {testing_api}')
         try:
             res = self.app.get(testing_api)
-            self.log.info(f"GET GUID: {self.guid}")
-            self.log.info(f"GET STATUS: {res.status_code}")
-            self.log.info(f"GET RESPONSE: {res.data}")
+            self.log.info(f'GET GUID: {self.guid}')
+            self.log.info(f'GET STATUS: {res.status_code}')
+            self.log.info(f'GET RESPONSE: {res.data}')
             self.assertEqual(res.status_code, 200)
 
             actual_result = res.json['result']
@@ -212,11 +214,11 @@ class TestEntityOperation(unittest.TestCase):
             for entity in expected_result:
                 # compare other fields such as referredEntities
                 if entity not in ['entity', 'attributes', 'relationshipAttributes']:
-                    self.log.info(f"COMPARING ENTITY: {entity}")
+                    self.log.info(f'COMPARING ENTITY: {entity}')
                     self.assertEqual(actual_result[entity], expected_result[entity])
                 # compare fields in entity
                 elif entity == 'entity':
-                    self.log.info(f"COMPARING ENTITY: {entity}")
+                    self.log.info(f'COMPARING ENTITY: {entity}')
                     for e in actual_entity:
                         # compare attributes entity
                         if e == 'attributes':
@@ -238,15 +240,15 @@ class TestEntityOperation(unittest.TestCase):
 
     def test_05_get_entity_by_not_exist_guid(self):
         # EntityActionByGuid, '/v1/entity/guid/<guid>'
-        self.log.info("\n")
-        self.log.info(f"05 Test get_entity_by_not_exist_guid".center(80, '-'))
+        self.log.info('\n')
+        self.log.info('05 Test get_entity_by_not_exist_guid'.center(80, '-'))
         testing_api = '/v1/entity/guid/%s' % str('test')
-        self.log.info(f"POST API: {testing_api}")
+        self.log.info(f'POST API: {testing_api}')
         try:
             res = self.app.get(testing_api)
-            self.log.info(f"GET STATUS: {res.status_code}")
-            self.log.info(f"GET RESPONSE: {res.data}")
-            self.log.info(f"COMPARING: {res.status_code} VS {404}")
+            self.log.info(f'GET STATUS: {res.status_code}')
+            self.log.info(f'GET RESPONSE: {res.data}')
+            self.log.info(f'COMPARING: {res.status_code} VS {404}')
             self.assertEqual(res.status_code, 404)
             self.log.info(f"CHECK RESPONSE: {b'Given instance guid test is invalid/not found'} IN {res.data}")
             self.assertIn(b'Given instance guid test is invalid/not found', res.data)
@@ -256,15 +258,15 @@ class TestEntityOperation(unittest.TestCase):
 
     def test_06_get_entity_by_empty_guid(self):
         # EntityActionByGuid, '/v1/entity/guid/<guid>'
-        self.log.info("\n")
-        self.log.info(f"06 Test get_entity_by_empty_guid".center(80, '-'))
+        self.log.info('\n')
+        self.log.info('06 Test get_entity_by_empty_guid'.center(80, '-'))
         testing_api = '/v1/entity/guid/%s' % str('test')
-        self.log.info(f"POST API: {testing_api}")
+        self.log.info(f'POST API: {testing_api}')
         try:
             res = self.app.get(testing_api)
-            self.log.info(f"GET STATUS: {res.status_code}")
-            self.log.info(f"GET RESPONSE: {res.data}")
-            self.log.info(f"COMPARING: {res.status_code} VS {404}")
+            self.log.info(f'GET STATUS: {res.status_code}')
+            self.log.info(f'GET RESPONSE: {res.data}')
+            self.log.info(f'COMPARING: {res.status_code} VS {404}')
             self.assertEqual(res.status_code, 404)
             self.log.info(f"CHECK RESPONSE: {b'Given instance guid test is invalid/not found'} IN {res.data}")
             self.assertIn(b'Given instance guid test is invalid/not found', res.data)
@@ -274,119 +276,119 @@ class TestEntityOperation(unittest.TestCase):
 
     def test_07_update_tag_with_space(self):
         # EntityTagByGuid, '/v1/entity/guid/<guid>/labels'
-        self.log.info("\n")
-        self.log.info(f"07 Test update_tag_with_space".center(80, '-'))
+        self.log.info('\n')
+        self.log.info('07 Test update_tag_with_space'.center(80, '-'))
         testing_api = '/v1/entity/guid/%s/labels' % str(self.guid)
         payload = {'labels': ['test label']}
-        self.log.info(f"POST API: {testing_api}")
-        self.log.info(f"POST PAYLOAD: {payload}")
+        self.log.info(f'POST API: {testing_api}')
+        self.log.info(f'POST PAYLOAD: {payload}')
         try:
             res = self.app.post(testing_api, json=payload)
-            self.log.info(f"POST STATUS: {res.status_code}")
-            self.log.info(f"POST RESPONSE: {res.data}")
+            self.log.info(f'POST STATUS: {res.status_code}')
+            self.log.info(f'POST RESPONSE: {res.data}')
             self.assertEqual(res.status_code, 403)
-            self.assertIn(b"Invalid label: test label, label should contain alphanumeric characters, _ or -", res.data)
+            self.assertIn(b'Invalid label: test label, label should contain alphanumeric characters, _ or -', res.data)
         except Exception as e:
             self.log.error(e)
             raise e
 
     def test_08_update_tag_without_space(self):
         # EntityTagByGuid, '/v1/entity/guid/<guid>/labels'
-        self.log.info("\n")
-        self.log.info(f"08 Test update_tag".center(80, '-'))
+        self.log.info('\n')
+        self.log.info('08 Test update_tag'.center(80, '-'))
         testing_api = '/v1/entity/guid/%s/labels' % str(self.guid)
         payload = {'labels': ['test_label']}
-        self.log.info(f"POST API: {testing_api}")
-        self.log.info(f"POST PAYLOAD: {payload}")
+        self.log.info(f'POST API: {testing_api}')
+        self.log.info(f'POST PAYLOAD: {payload}')
         try:
             res = self.app.post(testing_api, json=payload)
-            self.log.info(f"POST STATUS: {res.status_code}")
-            self.log.info(f"POST RESPONSE: {res.data}")
+            self.log.info(f'POST STATUS: {res.status_code}')
+            self.log.info(f'POST RESPONSE: {res.data}')
             self.assertEqual(res.status_code, 200)
-            self.assertIn(b"success", res.data)
+            self.assertIn(b'success', res.data)
 
             get_entity_api = '/v1/entity/guid/%s' % str(self.guid)
             get_res = self.app.get(get_entity_api)
-            self.log.info(f"GET GUID: {get_res.data}")
+            self.log.info(f'GET GUID: {get_res.data}')
             get_res = get_res.json
             labels = get_res['result']['entity']['labels']
             self.log.info(f"COMPARING CURRENT LABELS: {payload['labels']} VS {labels}")
             self.assertEqual(labels, payload['labels'])
-            self.log.info("RESET TAG")
+            self.log.info('RESET TAG')
             reset = self.app.post(testing_api, json={'labels': []})
             self.assertEqual(res.status_code, 200)
-            self.log.info(f"RESET RESULT: {reset.data}")
+            self.log.info(f'RESET RESULT: {reset.data}')
         except Exception as e:
             self.log.error(e)
             raise e
 
     def test_09_update_long_tag(self):
         # EntityTagByGuid, '/v1/entity/guid/<guid>/labels'
-        self.log.info("\n")
-        self.log.info(f"09 Test update_long_tag".center(80, '-'))
+        self.log.info('\n')
+        self.log.info('09 Test update_long_tag'.center(80, '-'))
         testing_api = '/v1/entity/guid/%s/labels' % str(self.guid)
         # magic number for tag length is 51
         payload = {'labels': ['LoremspaceIpsumspaceisspacesimplyspacedummyspacetex']}
-        self.log.info(f"POST API: {testing_api}")
+        self.log.info(f'POST API: {testing_api}')
         self.log.info(f"POST PAYLOAD TAG LENGTH {len(payload['labels'][0])}: {payload}")
         try:
             res = self.app.post(testing_api, json=payload)
-            self.log.info(f"POST STATUS: {res.status_code}")
-            self.log.info(f"POST RESPONSE: {res.data}")
+            self.log.info(f'POST STATUS: {res.status_code}')
+            self.log.info(f'POST RESPONSE: {res.data}')
             self.assertEqual(res.status_code, 403)
-            self.assertIn(b"label size should not be greater than 50", res.data)
+            self.assertIn(b'label size should not be greater than 50', res.data)
         except Exception as e:
             self.log.error(e)
             raise e
 
     def test_10_update_tag_with_characters(self):
         # EntityTagByGuid, '/v1/entity/guid/<guid>/labels'
-        self.log.info("\n")
-        self.log.info(f"10 Test update_tag_with_characters".center(80, '-'))
+        self.log.info('\n')
+        self.log.info('10 Test update_tag_with_characters'.center(80, '-'))
         testing_api = '/v1/entity/guid/%s/labels' % str(self.guid)
         payload = {'labels': ['!@#$%']}
-        self.log.info(f"POST API: {testing_api}")
+        self.log.info(f'POST API: {testing_api}')
         self.log.info(f"POST PAYLOAD TAG LENGTH {len(payload['labels'][0])}: {payload}")
         try:
             res = self.app.post(testing_api, json=payload)
-            self.log.info(f"POST STATUS: {res.status_code}")
-            self.log.info(f"POST RESPONSE: {res.data}")
+            self.log.info(f'POST STATUS: {res.status_code}')
+            self.log.info(f'POST RESPONSE: {res.data}')
             self.assertEqual(res.status_code, 403)
-            self.assertIn(b"label should contain alphanumeric characters, _ or -", res.data)
+            self.assertIn(b'label should contain alphanumeric characters, _ or -', res.data)
         except Exception as e:
             self.log.error(e)
             raise e
 
     def test_11_update_tag_without_labels(self):
         # EntityTagByGuid, '/v1/entity/guid/<guid>/labels'
-        self.log.info("\n")
-        self.log.info(f"11 Test update_tag_without_labels".center(80, '-'))
+        self.log.info('\n')
+        self.log.info('11 Test update_tag_without_labels'.center(80, '-'))
         testing_api = '/v1/entity/guid/%s/labels' % str(self.guid)
         payload = {}
-        self.log.info(f"POST API: {testing_api}")
+        self.log.info(f'POST API: {testing_api}')
         try:
             res = self.app.post(testing_api, json=payload)
-            self.log.info(f"POST STATUS: {res.status_code}")
-            self.log.info(f"POST RESPONSE: {res.data}")
+            self.log.info(f'POST STATUS: {res.status_code}')
+            self.log.info(f'POST RESPONSE: {res.data}')
             self.assertEqual(res.status_code, 403)
-            self.assertIn(b"labels is required", res.data)
+            self.assertIn(b'labels is required', res.data)
         except Exception as e:
             self.log.error(e)
             raise e
 
     def test_12_update_tag_with_string_labels(self):
         # EntityTagByGuid, '/v1/entity/guid/<guid>/labels'
-        self.log.info("\n")
-        self.log.info(f"12 Test update_tag_with_string_labels".center(80, '-'))
+        self.log.info('\n')
+        self.log.info('12 Test update_tag_with_string_labels'.center(80, '-'))
         testing_api = '/v1/entity/guid/%s/labels' % str(self.guid)
         payload = {'labels': 'test_labels'}
-        self.log.info(f"POST API: {testing_api}")
+        self.log.info(f'POST API: {testing_api}')
         try:
             res = self.app.post(testing_api, json=payload)
-            self.log.info(f"POST STATUS: {res.status_code}")
-            self.log.info(f"POST RESPONSE: {res.data}")
+            self.log.info(f'POST STATUS: {res.status_code}')
+            self.log.info(f'POST RESPONSE: {res.data}')
             self.assertEqual(res.status_code, 403)
-            self.assertIn(b"labels is required", res.data)
+            self.assertIn(b'labels is required', res.data)
         except Exception as e:
             self.log.error(e)
             raise e
@@ -405,8 +407,8 @@ class TestEntityOperation(unittest.TestCase):
 
     def test_14_get_list_of_entities_by_query_daily_count(self):
         # EntityQueryBasic, '/v1/entity/basic'
-        self.log.info("\n")
-        self.log.info(f"14 Test get_list_of_entities_by_query_daily_count".center(80, '-'))
+        self.log.info('\n')
+        self.log.info('14 Test get_list_of_entities_by_query_daily_count'.center(80, '-'))
         page = 0
         page_size = 10
         # data ops usage in dailyFileCount, '/containers/<container_id>/files/count/daily'
@@ -416,8 +418,8 @@ class TestEntityOperation(unittest.TestCase):
             'includeSubTypes': False,
             'includeClassificationAttributes': False,
             'entityFilters': {
-                "condition": "AND",
-                "criterion": self.criterion
+                'condition': 'AND',
+                'criterion': self.criterion
             },
             'tagFilters': None,
             'attributes': ['owner', 'downloader', 'fileName'],
@@ -429,21 +431,21 @@ class TestEntityOperation(unittest.TestCase):
             'classification': None,
             'termName': None
         }
-        compare = {'eq': '=', 'gte': '>=', 'lte':'<='}
+        compare = {'eq': '=', 'gte': '>=', 'lte': '<='}
         testing_api = '/v1/entity/basic'
-        self.log.info(f"POST API: {testing_api}")
+        self.log.info(f'POST API: {testing_api}')
         try:
             res = self.app.post(testing_api, json=post_data, headers={'content-type': 'application/json'})
-            self.log.info(f"POST STATUS: {res.status_code}")
-            self.log.info(f"POST RESPONSE: {res.data}")
-            self.log.info(f"COMPARINTG: {res.status_code} VS {200}")
+            self.log.info(f'POST STATUS: {res.status_code}')
+            self.log.info(f'POST RESPONSE: {res.data}')
+            self.log.info(f'COMPARINTG: {res.status_code} VS {200}')
             self.assertEqual(res.status_code, 200)
             res = res.json
-            self.log.info(f"RESPONSE JOSN: {res}")
-            result = res["result"]["searchParameters"]
+            self.log.info(f'RESPONSE JOSN: {res}')
+            result = res['result']['searchParameters']
             self.assertEqual(result['typeName'], self.post_data['entity']['typeName'])
             for r in result:
-                self.log.info(f"COMPARING {r}: {result[r]} VS {post_data[r]}")
+                self.log.info(f'COMPARING {r}: {result[r]} VS {post_data[r]}')
                 if r == 'entityFilters':
                     self.assertEqual(result[r]['condition'], post_data['entityFilters']['condition'])
                     new_criterion = result[r]['criterion']
@@ -462,8 +464,8 @@ class TestEntityOperation(unittest.TestCase):
 
     def test_15_get_list_of_entities_by_query_download_log_desc(self):
         # EntityQueryBasic, '/v1/entity/basic'
-        self.log.info("\n")
-        self.log.info(f"15 Test get_list_of_entities_by_query_download_log_desc".center(80, '-'))
+        self.log.info('\n')
+        self.log.info('15 Test get_list_of_entities_by_query_download_log_desc'.center(80, '-'))
         page = 0
         page_size = 10
         sorting = 'createTime'
@@ -486,19 +488,19 @@ class TestEntityOperation(unittest.TestCase):
             'termName': None
         }
         testing_api = '/v1/entity/basic'
-        self.log.info(f"POST API: {testing_api}")
+        self.log.info(f'POST API: {testing_api}')
         try:
             res = self.app.post(testing_api, json=post_data, headers={'content-type': 'application/json'})
-            self.log.info(f"POST STATUS: {res.status_code}")
-            self.log.info(f"POST RESPONSE: {res.data}")
-            self.log.info(f"COMPARINTG: {res.status_code} VS {200}")
+            self.log.info(f'POST STATUS: {res.status_code}')
+            self.log.info(f'POST RESPONSE: {res.data}')
+            self.log.info(f'COMPARINTG: {res.status_code} VS {200}')
             self.assertEqual(res.status_code, 200)
             res = res.json
-            self.log.info(f"RESPONSE JOSN: {res}")
-            result = res["result"]["searchParameters"]
+            self.log.info(f'RESPONSE JOSN: {res}')
+            result = res['result']['searchParameters']
             self.assertEqual(result['typeName'], self.post_data['entity']['typeName'])
             for r in result:
-                self.log.info(f"COMPARING {r}: {result[r]} VS {post_data[r]}")
+                self.log.info(f'COMPARING {r}: {result[r]} VS {post_data[r]}')
                 if isinstance(result[r], list):
                     self.assertEqual(set(result[r]), set(post_data[r]))
                 else:
@@ -509,8 +511,8 @@ class TestEntityOperation(unittest.TestCase):
 
     def test_16_get_list_of_entities_by_query_download_log_asc(self):
         # EntityQueryBasic, '/v1/entity/basic'
-        self.log.info("\n")
-        self.log.info(f"16 Test get_list_of_entities_by_query_download_log_asc".center(80, '-'))
+        self.log.info('\n')
+        self.log.info('16 Test get_list_of_entities_by_query_download_log_asc'.center(80, '-'))
         page = 0
         page_size = 10
         sorting = 'createTime'
@@ -533,19 +535,19 @@ class TestEntityOperation(unittest.TestCase):
             'termName': None
         }
         testing_api = '/v1/entity/basic'
-        self.log.info(f"POST API: {testing_api}")
+        self.log.info(f'POST API: {testing_api}')
         try:
             res = self.app.post(testing_api, json=post_data, headers={'content-type': 'application/json'})
-            self.log.info(f"POST STATUS: {res.status_code}")
-            self.log.info(f"POST RESPONSE: {res.data}")
-            self.log.info(f"COMPARINTG: {res.status_code} VS {200}")
+            self.log.info(f'POST STATUS: {res.status_code}')
+            self.log.info(f'POST RESPONSE: {res.data}')
+            self.log.info(f'COMPARINTG: {res.status_code} VS {200}')
             self.assertEqual(res.status_code, 200)
             res = res.json
-            self.log.info(f"RESPONSE JOSN: {res}")
-            result = res["result"]["searchParameters"]
+            self.log.info(f'RESPONSE JOSN: {res}')
+            result = res['result']['searchParameters']
             self.assertEqual(result['typeName'], self.post_data['entity']['typeName'])
             for r in result:
-                self.log.info(f"COMPARING {r}: {result[r]} VS {post_data[r]}")
+                self.log.info(f'COMPARING {r}: {result[r]} VS {post_data[r]}')
                 if isinstance(result[r], list):
                     self.assertEqual(set(result[r]), set(post_data[r]))
                 else:
@@ -556,8 +558,8 @@ class TestEntityOperation(unittest.TestCase):
 
     def test_17_get_list_of_entities_by_query_file_meta(self):
         # EntityQueryBasic, '/v1/entity/basic'
-        self.log.info("\n")
-        self.log.info(f"17 Test get_list_of_entities_by_query_file_meta".center(80, '-'))
+        self.log.info('\n')
+        self.log.info('17 Test get_list_of_entities_by_query_file_meta'.center(80, '-'))
         page = 0
         page_size = 10
         sorting = 'createTime'
@@ -570,8 +572,8 @@ class TestEntityOperation(unittest.TestCase):
             'includeSubTypes': False,
             'includeClassificationAttributes': False,
             'entityFilters': {
-                "condition": "AND",
-                "criterion": self.criterion
+                'condition': 'AND',
+                'criterion': self.criterion
             },
             'tagFilters': None,
             'attributes': ['fileName', 'fileSize', 'path'],
@@ -583,21 +585,21 @@ class TestEntityOperation(unittest.TestCase):
             'classification': None,
             'termName': None
         }
-        compare = {'eq': '=', 'gte': '>=', 'lte':'<='}
+        compare = {'eq': '=', 'gte': '>=', 'lte': '<='}
         testing_api = '/v1/entity/basic'
-        self.log.info(f"POST API: {testing_api}")
+        self.log.info(f'POST API: {testing_api}')
         try:
             res = self.app.post(testing_api, json=post_data, headers={'content-type': 'application/json'})
-            self.log.info(f"POST STATUS: {res.status_code}")
-            self.log.info(f"POST RESPONSE: {res.data}")
-            self.log.info(f"COMPARINTG: {res.status_code} VS {200}")
+            self.log.info(f'POST STATUS: {res.status_code}')
+            self.log.info(f'POST RESPONSE: {res.data}')
+            self.log.info(f'COMPARINTG: {res.status_code} VS {200}')
             self.assertEqual(res.status_code, 200)
             res = res.json
-            self.log.info(f"RESPONSE JOSN: {res}")
-            result = res["result"]["searchParameters"]
+            self.log.info(f'RESPONSE JOSN: {res}')
+            result = res['result']['searchParameters']
             self.assertEqual(result['typeName'], self.post_data['entity']['typeName'])
             for r in result:
-                self.log.info(f"COMPARING {r}: {result[r]} VS {post_data[r]}")
+                self.log.info(f'COMPARING {r}: {result[r]} VS {post_data[r]}')
                 if r == 'entityFilters':
                     self.assertEqual(result[r]['condition'], post_data['entityFilters']['condition'])
                     new_criterion = result[r]['criterion']
@@ -615,23 +617,19 @@ class TestEntityOperation(unittest.TestCase):
             raise e
 
     def test_18_get_audit_log(self):
-        """
-        This API is not currently in use.
+        """This API is not currently in use.
+
         If this API is using by any service, please update test case accordingly
         """
         # EntityQueryBasic, '/v1/entity/basic'
-        self.log.info("\n")
-        self.log.info(f"18 Test get_audit_log".center(80, '-'))
+        self.log.info('\n')
+        self.log.info('18 Test get_audit_log'.center(80, '-'))
         testing_api = '/v1/entity/guid/%s/audit' % str(self.guid)
         params = {'count': 25}
         try:
             res = self.app.get(testing_api, query_string=params)
-            self.log.info(f"GET STATUS: {res.status_code}")
-            self.log.info(f"GET RESPONSE: {res.data}")
+            self.log.info(f'GET STATUS: {res.status_code}')
+            self.log.info(f'GET RESPONSE: {res.data}')
         except Exception as e:
             self.log.error(e)
             raise e
-
-
-
-

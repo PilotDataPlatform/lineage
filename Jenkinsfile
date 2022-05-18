@@ -30,14 +30,13 @@ pipeline {
             file(credentialsId:'VAULT_CRT', variable: 'VAULT_CRT')
           ]) {
             sh """
-            export CONFIG_CENTER_ENABLED='true'
             export VAULT_TOKEN=${VAULT_TOKEN}
             export VAULT_URL=${VAULT_URL}
             export VAULT_CRT=${VAULT_CRT}
-            ${HOME}/.local/bin/virtualenv -p python3 venv
-            . venv/bin/activate
-            pip3 install -r requirements.txt -r internal_requirements.txt -r tests/test_requirements.txt
-            pytest -c tests/pytest.ini
+            pip install --user poetry==1.1.12
+            ${HOME}/.local/bin/poetry config virtualenvs.in-project true
+            ${HOME}/.local/bin/poetry install --no-root --no-interaction
+            ${HOME}/.local/bin/poetry run pytest --verbose -c tests/pytest.ini
             """
           }
       }

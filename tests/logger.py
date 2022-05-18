@@ -14,23 +14,23 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 import logging
-from logging.handlers import RotatingFileHandler
 import os
+from logging.handlers import RotatingFileHandler
 
 
 class Logger(object):
 
     def __init__(self, name='log'):
-        if not os.path.exists("./tests/logs/"):
-            os.makedirs("./tests/logs/")
-        if os.path.isfile("./tests/logs/" + name):
-            os.remove("./tests/logs/" + name)
+        if not os.path.exists('./tests/logs/'):
+            os.makedirs('./tests/logs/')
+        if os.path.isfile('./tests/logs/' + name):
+            os.remove('./tests/logs/' + name)
         self.name = name
         self.logger = logging.getLogger(name)
         level = logging.INFO
 
         self.logger.setLevel(level)
-        fh = RotatingFileHandler("./tests/logs/"+name, maxBytes=500000, backupCount=5)
+        fh = RotatingFileHandler('./tests/logs/'+name, maxBytes=500000, backupCount=5)
         formatter = logging.Formatter('%(asctime)s %(levelname)-8s %(message)s',
                                       '%Y-%m-%d %H:%M:%S')
         fh.setFormatter(formatter)

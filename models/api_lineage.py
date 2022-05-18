@@ -13,11 +13,13 @@
 # You should have received a copy of the GNU Affero General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-from flask_restx import Api, Resource, fields
+from flask_restx import fields
+
 from atlas_api import module_api
 from services.logger_services.logger_factory_service import SrvLoggerFactory
 
 _logger = SrvLoggerFactory('api_lineage_action').get_logger()
+
 
 class CreationForm:
     def __init__(self, event=None):
@@ -85,6 +87,7 @@ class CreationForm:
     def process_timestamp(self, process_timestamp):
         self._attribute_map['process_timestamp'] = process_timestamp
 
+
 def creationFormFactory(post_form):
     try:
         my_form = CreationForm()
@@ -97,7 +100,8 @@ def creationFormFactory(post_form):
         return my_form
     except Exception as e:
         _logger.error(str(e))
-        raise(Exception('Invalid post form: ' + str(post_form)))
+        raise (Exception('Invalid post form: ' + str(post_form)))
+
 
 lineage_get_sample_res = '''
 {
@@ -223,7 +227,6 @@ lineage_post_form = module_api.model(
     }
 )
 
-
 lineage_import_post_form = module_api.model(
     'lineage_import_post_form',
     {
@@ -231,4 +234,3 @@ lineage_import_post_form = module_api.model(
         'entity_type': fields.String(readOnly=True, description='entity_type')
     }
 )
-

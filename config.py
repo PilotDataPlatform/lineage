@@ -14,34 +14,36 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 import os
-import requests
-from common import VaultClient
-from requests.models import HTTPError
-from pydantic import BaseSettings, Extra
-from typing import Dict, Set, List, Any
 from functools import lru_cache
+from typing import Any
+from typing import Dict
+from typing import List
+
+from common import VaultClient
 from dotenv import load_dotenv
+from pydantic import BaseSettings
+from pydantic import Extra
 
 # load env var from local env file for local test
 load_dotenv()
-SRV_NAMESPACE = os.environ.get("APP_NAME", "service_cataloguing")
-CONFIG_CENTER_ENABLED = os.environ.get("CONFIG_CENTER_ENABLED", "false")
+SRV_NAMESPACE = os.environ.get('APP_NAME', 'service_cataloguing')
+CONFIG_CENTER_ENABLED = os.environ.get('CONFIG_CENTER_ENABLED', 'false')
 
 
 def load_vault_settings(settings: BaseSettings) -> Dict[str, Any]:
-    if CONFIG_CENTER_ENABLED == "false":
+    if CONFIG_CENTER_ENABLED == 'false':
         return {}
     else:
-        vc = VaultClient(os.getenv("VAULT_URL"), os.getenv("VAULT_CRT"), os.getenv("VAULT_TOKEN"))
+        vc = VaultClient(os.getenv('VAULT_URL'), os.getenv('VAULT_CRT'), os.getenv('VAULT_TOKEN'))
         return vc.get_from_vault(SRV_NAMESPACE)
 
 
 class Settings(BaseSettings):
     port: int = 5064
-    host: str = "0.0.0.0"
-    env: str = "test"
-    version: str = "0.1.0"
-    namespace: str = ""
+    host: str = '0.0.0.0'
+    env: str = 'test'
+    version: str = '0.1.0'
+    namespace: str = ''
     opentelemetry_enabled: bool = False
 
     ROOT_PATH: str
@@ -51,14 +53,14 @@ class Settings(BaseSettings):
     ATLAS_PASSWD: str
 
     # the packaged modules
-    api_modules: List[str] = ["atlas_api"]
+    api_modules: List[str] = ['atlas_api']
 
     def __init__(self):
         super().__init__()
 
-        self.opentelemetry_enabled = True if self.OPEN_TELEMETRY_ENABLED == "TRUE" else False
-        self.ATLAS_API += "/"
-        self.UTILITY_SERVICE += "/v1/"
+        self.opentelemetry_enabled = True if self.OPEN_TELEMETRY_ENABLED == 'TRUE' else False
+        self.ATLAS_API += '/'
+        self.UTILITY_SERVICE += '/v1/'
 
     class Config:
         env_file = '.env'
@@ -67,10 +69,10 @@ class Settings(BaseSettings):
 
         @classmethod
         def customise_sources(
-                cls,
-                init_settings,
-                env_settings,
-                file_secret_settings,
+            cls,
+            init_settings,
+            env_settings,
+            file_secret_settings,
         ):
             return (
                 init_settings,

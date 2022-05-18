@@ -14,24 +14,29 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 import logging
-import os, os.path
+import os
+import os.path
 import sys
+
 from models.meta_class import MetaService
+
 from .formatter import formatter_factory
 
 my_formatter = formatter_factory()
 
+
 class SrvLoggerFactory(metaclass=MetaService):
     def __init__(self, name):
-        if not os.path.exists("./logs/"):
-            os.makedirs("./logs/")
+        if not os.path.exists('./logs/'):
+            os.makedirs('./logs/')
         self.name = name
+
     def get_logger(self):
         logger = logging.getLogger(self.name)
         logger.setLevel(logging.DEBUG)
         if not logger.handlers:
             # File Handler
-            handler = logging.FileHandler("logs/{}.log".format(self.name))        
+            handler = logging.FileHandler('logs/{}.log'.format(self.name))
             handler.setFormatter(my_formatter)
             handler.setLevel(logging.DEBUG)
             # Standard Out Handler
