@@ -65,7 +65,7 @@ pipeline {
       steps{
         build(job: "/VRE-IaC/UpdateAppVersion", parameters: [
           [$class: 'StringParameterValue', name: 'TF_TARGET_ENV', value: 'dev' ],
-          [$class: 'StringParameterValue', name: 'TARGET_RELEASE', value: 'lineage' ],
+          [$class: 'StringParameterValue', name: 'TARGET_RELEASE', value: 'cataloguing' ],
           [$class: 'StringParameterValue', name: 'NEW_APP_VERSION', value: "$commit" ]
       ])
       }
@@ -105,7 +105,7 @@ pipeline {
       steps{
       build(job: "/VRE-IaC/Staging-UpdateAppVersion", parameters: [
         [$class: 'StringParameterValue', name: 'TF_TARGET_ENV', value: 'staging' ],
-        [$class: 'StringParameterValue', name: 'TARGET_RELEASE', value: 'lineage' ],
+        [$class: 'StringParameterValue', name: 'TARGET_RELEASE', value: 'cataloguing' ],
         [$class: 'StringParameterValue', name: 'NEW_APP_VERSION', value: "$commit" ]
       ])
       }
