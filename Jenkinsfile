@@ -47,7 +47,7 @@ pipeline {
       steps{
         script {
             docker.withRegistry('https://ghcr.io', registryCredential) {
-                customImage = docker.build("$imagename_dev:$commit", "--add-host git.indocresearch.org:10.4.3.151 .")
+                customImage = docker.build("$imagename_dev:$commit", ".")
                 customImage.push()
             }
         }
@@ -70,7 +70,7 @@ pipeline {
       ])
       }
     }
-
+/**
     stage('Git clone staging') {
         when {branch "main"}
         steps{
@@ -81,13 +81,12 @@ pipeline {
             }
         }
     }
-
     stage('STAGING Building and push image') {
       when {branch "main"}
       steps{
         script {
           docker.withRegistry('https://ghcr.io', registryCredential) {
-              customImage = docker.build("$imagename_staging:$commit", "--add-host git.indocresearch.org:10.4.3.151 .")
+              customImage = docker.build("$imagename_staging:$commit", ".")
               customImage.push()
           }
         }
@@ -111,6 +110,7 @@ pipeline {
       ])
       }
     }
+**/    
   }
   post {
     failure {
