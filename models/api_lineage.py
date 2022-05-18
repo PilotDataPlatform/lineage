@@ -1,8 +1,25 @@
-from flask_restx import Api, Resource, fields
+# Copyright (C) 2022 Indoc Research
+#
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU Affero General Public License as
+# published by the Free Software Foundation, either version 3 of the
+# License, or (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU Affero General Public License for more details.
+#
+# You should have received a copy of the GNU Affero General Public License
+# along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+from flask_restx import fields
+
 from atlas_api import module_api
 from services.logger_services.logger_factory_service import SrvLoggerFactory
 
 _logger = SrvLoggerFactory('api_lineage_action').get_logger()
+
 
 class CreationForm:
     def __init__(self, event=None):
@@ -70,6 +87,7 @@ class CreationForm:
     def process_timestamp(self, process_timestamp):
         self._attribute_map['process_timestamp'] = process_timestamp
 
+
 def creationFormFactory(post_form):
     try:
         my_form = CreationForm()
@@ -82,7 +100,8 @@ def creationFormFactory(post_form):
         return my_form
     except Exception as e:
         _logger.error(str(e))
-        raise(Exception('Invalid post form: ' + str(post_form)))
+        raise (Exception('Invalid post form: ' + str(post_form)))
+
 
 lineage_get_sample_res = '''
 {
@@ -208,7 +227,6 @@ lineage_post_form = module_api.model(
     }
 )
 
-
 lineage_import_post_form = module_api.model(
     'lineage_import_post_form',
     {
@@ -216,4 +234,3 @@ lineage_import_post_form = module_api.model(
         'entity_type': fields.String(readOnly=True, description='entity_type')
     }
 )
-

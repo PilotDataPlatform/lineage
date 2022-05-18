@@ -13,22 +13,17 @@ follow the step below to setup the service
 
 ### Clone
 
-- Clone this repo to machine using `https://git.indocresearch.org/platform/service_metadata.git`
+- Clone this repo to machine using `https://github.com/PilotDataPlatform/lineage.git`
 
 ### Setup:
 
 > To run the service as dev mode
 
 ```
-python3 -m pip install -r requirements.txt
-python3 app.py
-```
 
-> To run the service as production in docker and gunicorn
-
-```
-docker build . -t metadata/latest
-docker run metadata/latest -d
+pip install --no-cache-dir poetry==1.1.12
+poetry install
+poetry run python app.py
 ```
 
 > To add new entity in atlas run the curl in the `type.txt` it will add two more entity in atlas:
