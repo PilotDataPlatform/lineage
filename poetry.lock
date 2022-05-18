@@ -499,17 +499,6 @@ optional = false
 python-versions = "*"
 
 [[package]]
-name = "neo4j"
-version = "4.0.0"
-description = "Neo4j Bolt driver for Python"
-category = "main"
-optional = false
-python-versions = "*"
-
-[package.dependencies]
-pytz = "*"
-
-[[package]]
 name = "opentelemetry-api"
 version = "1.7.1"
 description = "OpenTelemetry Python API"
@@ -1096,7 +1085,7 @@ testing = ["pytest (>=6)", "pytest-checkdocs (>=2.4)", "pytest-flake8", "pytest-
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.7"
-content-hash = "5b88257248f9333c6f51784544dae229466a72b00cad9a03f737e368120ab5e0"
+content-hash = "0f866b0860dd75d8784576a3993e3b87e53b7b80aa71ca93a5d4d96072ac3386"
 
 [metadata.files]
 aniso8601 = [
@@ -1451,9 +1440,6 @@ markupsafe = [
 mccabe = [
     {file = "mccabe-0.6.1-py2.py3-none-any.whl", hash = "sha256:ab8a6258860da4b6677da4bd2fe5dc2c659cff31b3ee4f7f5d64e79735b80d42"},
     {file = "mccabe-0.6.1.tar.gz", hash = "sha256:dd8d182285a0fe56bace7f45b5e7d1a6ebcbf524e8f3bd87eb0f125271b8831f"},
-]
-neo4j = [
-    {file = "neo4j-4.0.0.tar.gz", hash = "sha256:82166c1cdebaa3ab174ff7ad608289293856a8847b4d90de13932c06cee8e030"},
 ]
 opentelemetry-api = [
     {file = "opentelemetry-api-1.7.1.tar.gz", hash = "sha256:aa4c29150042fd4e9efc30810bc5413a16a442b75fa16bef879651016ca8497e"},
