@@ -20,8 +20,10 @@ follow the step below to setup the service
 > To run the service as dev mode
 
 ```
-python3 -m pip install -r requirements.txt -r internal_requirements.txt
-python3 app.py
+
+pip install --no-cache-dir poetry==1.1.12
+poetry install
+poetry run python app.py
 ```
 
 > To add new entity in atlas run the curl in the `type.txt` it will add two more entity in atlas:
