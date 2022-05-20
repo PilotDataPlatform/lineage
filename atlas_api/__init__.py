@@ -15,12 +15,6 @@
 
 from flask_restx import Api
 
-module_api = Api(version='1.0', title='Atlas API',
-                 description='Atlas API', doc='/v1/api-doc'
-                 )
-
-atlas_entity_ns = module_api.namespace('Atlas Entity Actions', description='Operation on Atlas Entity', path='/')
-
 from .audit_operation import AuditAction
 from .entity_operation import EntityAction
 from .entity_operation import EntityActionByGuid
@@ -28,6 +22,10 @@ from .entity_operation import EntityByGuidBulk
 from .entity_operation import EntityQueryBasic
 from .entity_operation import EntityTagByGuid
 from .file_data_operations import FileDataOperations
+
+module_api = Api(version='1.0', title='Atlas API', description='Atlas API', doc='/v1/api-doc')
+
+atlas_entity_ns = module_api.namespace('Atlas Entity Actions', description='Operation on Atlas Entity', path='/')
 
 # Entity API
 atlas_entity_ns.add_resource(EntityAction, '/v1/entity')

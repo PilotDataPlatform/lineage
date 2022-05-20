@@ -32,9 +32,20 @@ class SrvFileDataMgr(metaclass=MetaService):
         self.entity_uniquename_endpoint = 'api/atlas/v2/entity/uniqueAttribute/type/{}?attr:qualifiedName={}'
         self.entity_type = 'file_data'
 
-    def create(self, geid, uploader, path, file_name, file_size,
-               description, namespace, project_code, project_name,
-               labels, dcm_id=None, guid=None):
+    def create(
+        self,
+        geid,
+        uploader,
+        path,
+        file_name,
+        file_size,
+        description,
+        namespace,
+        project_code,
+        project_name,
+        labels,
+        guid=None,
+    ):
         """create data entity or update in Atlas."""
         headers = {'content-type': 'application/json'}
 
@@ -46,7 +57,6 @@ class SrvFileDataMgr(metaclass=MetaService):
             'qualifiedName': geid,
             'full_path': geid,  # full path requires unique
             'file_size': file_size,
-            'dcm_id': dcm_id,
             'archived': False,
             'description': description,
             'owner': uploader,
@@ -71,8 +81,6 @@ class SrvFileDataMgr(metaclass=MetaService):
             'isSymlink': False,
             'group': None,
         }
-        if dcm_id:
-            attrs['dcm_id'] = dcm_id
         if project_name:
             attrs['project_name'] = project_name
 
@@ -89,19 +97,20 @@ class SrvFileDataMgr(metaclass=MetaService):
                     'schema': [],
                     'inputToProcesses': [],
                     'meanings': [],
-                    'outputFromProcesses': []
+                    'outputFromProcesses': [],
                 },
                 'customAttributes': {},
-                'labels': labels
-            }
+                'labels': labels,
+            },
         }
         if guid:
             atlas_post_form_json['entity']['guid'] = guid
 
-        res = requests.post(self.base_url + self.entity_endpoint,
-                            verify=False, json=atlas_post_form_json,
-                            auth=requests.auth.HTTPBasicAuth(ConfigClass.ATLAS_ADMIN,
-                                                             ConfigClass.ATLAS_PASSWD),
-                            headers=headers
-                            )
+        res = requests.post(
+            self.base_url + self.entity_endpoint,
+            verify=False,
+            json=atlas_post_form_json,
+            auth=requests.auth.HTTPBasicAuth(ConfigClass.ATLAS_ADMIN, ConfigClass.ATLAS_PASSWD),
+            headers=headers,
+        )
         return res

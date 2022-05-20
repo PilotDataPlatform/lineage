@@ -37,7 +37,7 @@ class FileDataOperations(Resource):
         try:
             required = ['uploader', 'file_name', 'path', 'file_size', 'namespace', 'project_code', 'global_entity_id']
             for param in required:
-                if not param in post_data:
+                if param not in post_data:
                     return {'result': '{} is required'.format(param)}, 404
             uploader = post_data.get('uploader')
             file_name = post_data.get('file_name')
@@ -48,7 +48,6 @@ class FileDataOperations(Resource):
             project_code = post_data.get('project_code')
             project_name = post_data.get('project_name', project_code)
             labels = post_data.get('labels', [])
-            dcm_id = post_data.get('dcm_id', None)
             global_entity_id = post_data.get('global_entity_id')
 
             response = self.file_data_mgr.create(
@@ -62,8 +61,7 @@ class FileDataOperations(Resource):
                 project_code,
                 project_name,
                 labels,
-                dcm_id=dcm_id,
-                guid=None
+                guid=None,
             )
             if response.status_code == 200:
                 response_json = response.json()
@@ -72,7 +70,6 @@ class FileDataOperations(Resource):
                 self.__logger.error('Error: %s', response.text)
                 return {'result': response.text}, response.status_code
         except Exception as e:
-            self.__logger.error('Error in update entity: %s', str(e))
             return {'result': str(e)}, 403
 
     def delete(self):
@@ -81,7 +78,7 @@ class FileDataOperations(Resource):
         # validate inputs
         required = ['file_name', 'path', 'trash_path', 'trash_file_name', 'operator', 'file_name_suffix', 'trash_geid']
         for param in required:
-            if not param in post_data:
+            if param not in post_data:
                 return {'result': '{} is required'.format(param)}, 404
         file_name = post_data.get('file_name')
         file_name_suffix = post_data.get('file_name_suffix')
@@ -99,9 +96,16 @@ class FileDataOperations(Resource):
         response = api_res_models.APIResponse()
         deletion_ress = []
         for entity_type in entity_types:
-            deletion_res = self.file_data_mgr.delete(full_path, entity_type, trash_path, trash_file_name,
-                                                     operator, file_name_suffix, geid=trash_geid,
-                                                     updated_original_path=updated_original_file_path)
+            deletion_res = self.file_data_mgr.delete(
+                full_path,
+                entity_type,
+                trash_path,
+                trash_file_name,
+                operator,
+                file_name_suffix,
+                geid=trash_geid,
+                updated_original_path=updated_original_file_path,
+            )
             if deletion_res.get('error'):
                 return deletion_res, deletion_res['status_code']
             else:
