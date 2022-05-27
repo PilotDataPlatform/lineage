@@ -32,20 +32,9 @@ class SrvFileDataMgr(metaclass=MetaService):
         self.entity_uniquename_endpoint = 'api/atlas/v2/entity/uniqueAttribute/type/{}?attr:qualifiedName={}'
         self.entity_type = 'file_data'
 
-    def create(
-        self,
-        geid,
-        uploader,
-        path,
-        file_name,
-        file_size,
-        description,
-        namespace,
-        project_code,
-        project_name,
-        labels,
-        guid=None,
-    ):
+    def create(self, geid, uploader, path, file_name, file_size,
+               description, namespace, project_code, project_name,
+               labels, guid=None):
         """create data entity or update in Atlas."""
         headers = {'content-type': 'application/json'}
 

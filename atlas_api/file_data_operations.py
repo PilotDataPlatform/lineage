@@ -61,7 +61,7 @@ class FileDataOperations(Resource):
                 project_code,
                 project_name,
                 labels,
-                guid=None,
+                guid=None
             )
             if response.status_code == 200:
                 response_json = response.json()
