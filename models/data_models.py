@@ -44,6 +44,6 @@ file_data_post_form = module_api.model(
         'labels': fields.List(readOnly=True, description='labels', cls_or_instance=fields.String),  # optional
         'processed_pipeline': fields.String(readOnly=True, description='processed_pipeline'),
         # optional, for processed file
-        'operator': fields.String(readOnly=True, description='operator'),  # optional, for processed file
-    }
+        'operator': fields.String(readOnly=True, description='operator'),
+    },
 )

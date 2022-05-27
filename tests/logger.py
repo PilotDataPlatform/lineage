@@ -19,7 +19,6 @@ from logging.handlers import RotatingFileHandler
 
 
 class Logger(object):
-
     def __init__(self, name='log'):
         if not os.path.exists('./tests/logs/'):
             os.makedirs('./tests/logs/')
@@ -30,9 +29,8 @@ class Logger(object):
         level = logging.INFO
 
         self.logger.setLevel(level)
-        fh = RotatingFileHandler('./tests/logs/'+name, maxBytes=500000, backupCount=5)
-        formatter = logging.Formatter('%(asctime)s %(levelname)-8s %(message)s',
-                                      '%Y-%m-%d %H:%M:%S')
+        fh = RotatingFileHandler('./tests/logs/' + name, maxBytes=500000, backupCount=5)
+        formatter = logging.Formatter('%(asctime)s %(levelname)-8s %(message)s', '%Y-%m-%d %H:%M:%S')
         fh.setFormatter(formatter)
         self.logger.addHandler(fh)
 

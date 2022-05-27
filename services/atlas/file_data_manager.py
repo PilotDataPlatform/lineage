@@ -86,19 +86,20 @@ class SrvFileDataMgr(metaclass=MetaService):
                     'schema': [],
                     'inputToProcesses': [],
                     'meanings': [],
-                    'outputFromProcesses': []
+                    'outputFromProcesses': [],
                 },
                 'customAttributes': {},
-                'labels': labels
-            }
+                'labels': labels,
+            },
         }
         if guid:
             atlas_post_form_json['entity']['guid'] = guid
 
-        res = requests.post(self.base_url + self.entity_endpoint,
-                            verify=False, json=atlas_post_form_json,
-                            auth=requests.auth.HTTPBasicAuth(ConfigClass.ATLAS_ADMIN,
-                                                             ConfigClass.ATLAS_PASSWD),
-                            headers=headers
-                            )
+        res = requests.post(
+            self.base_url + self.entity_endpoint,
+            verify=False,
+            json=atlas_post_form_json,
+            auth=requests.auth.HTTPBasicAuth(ConfigClass.ATLAS_ADMIN, ConfigClass.ATLAS_PASSWD),
+            headers=headers,
+        )
         return res
