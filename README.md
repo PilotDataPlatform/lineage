@@ -46,3 +46,4 @@ the service uses the swagger to make the api documents: see the detailed [doc](l
 ### Audit Related API:
 
  - Get audit of entity by guid
+
