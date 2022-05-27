@@ -48,7 +48,6 @@ class FileDataOperations(Resource):
             project_code = post_data.get('project_code')
             project_name = post_data.get('project_name', project_code)
             labels = post_data.get('labels', [])
-            dcm_id = post_data.get('dcm_id', None)
             global_entity_id = post_data.get('global_entity_id')
 
             response = self.file_data_mgr.create(
@@ -62,7 +61,6 @@ class FileDataOperations(Resource):
                 project_code,
                 project_name,
                 labels,
-                dcm_id=dcm_id,
                 guid=None
             )
             if response.status_code == 200:

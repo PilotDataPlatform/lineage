@@ -27,7 +27,6 @@ class EDataType(Enum):
 
 
 class EPipeline(Enum):
-    dicom_edit = 0
     data_transfer = 1
 
 
@@ -43,7 +42,6 @@ file_data_post_form = module_api.model(
         'namespace': fields.String(readOnly=True, description='namespace', enum=['greenroom', 'core']),
         'project_code': fields.String(readOnly=True, description='project code'),
         'labels': fields.List(readOnly=True, description='labels', cls_or_instance=fields.String),  # optional
-        'dcm_id': fields.String(readOnly=True, description=''),  # optional
         'processed_pipeline': fields.String(readOnly=True, description='processed_pipeline'),
         # optional, for processed file
         'operator': fields.String(readOnly=True, description='operator'),  # optional, for processed file

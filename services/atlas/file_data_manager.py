@@ -34,7 +34,7 @@ class SrvFileDataMgr(metaclass=MetaService):
 
     def create(self, geid, uploader, path, file_name, file_size,
                description, namespace, project_code, project_name,
-               labels, dcm_id=None, guid=None):
+               labels, guid=None):
         """create data entity or update in Atlas."""
         headers = {'content-type': 'application/json'}
 
@@ -46,7 +46,6 @@ class SrvFileDataMgr(metaclass=MetaService):
             'qualifiedName': geid,
             'full_path': geid,  # full path requires unique
             'file_size': file_size,
-            'dcm_id': dcm_id,
             'archived': False,
             'description': description,
             'owner': uploader,
@@ -71,8 +70,6 @@ class SrvFileDataMgr(metaclass=MetaService):
             'isSymlink': False,
             'group': None,
         }
-        if dcm_id:
-            attrs['dcm_id'] = dcm_id
         if project_name:
             attrs['project_name'] = project_name
 
